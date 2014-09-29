@@ -14,13 +14,19 @@
 			}
 
 			#oldie { background-color: #ddd !important }
-		</style>
+	  </style>
 	</head>
 	<body>
+	    <div id="controls">
+		<div id="addCube" style="color:blue;">Add Cube</div>
+		<div id="addPipe" style="color:blue;">Add Cube</div>
+	    </div>
 
+	    </div>
 		<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.js"></script>
 		<script src="//cdnjs.cloudflare.com/ajax/libs/three.js/r68/three.min.js"></script>
-		<script src="http://mrdoob.github.com/three.js/examples/fonts/helvetiker_regular.typeface.js"></script>
+		<script src="js/fonts/helvetiker_regular.typeface.js"></script>
+		<script src="js/include.js"></script>
 
 		<script>
 
@@ -110,24 +116,25 @@
 
 				// grid
 
-				var size = 500, step = 50;
-
-				var geometry = new THREE.Geometry();
-
-				for ( var i = - size; i <= size; i += step ) {
-
-					geometry.vertices.push( new THREE.Vector3( - size, 0, i ) );
-					geometry.vertices.push( new THREE.Vector3(   size, 0, i ) );
-
-					geometry.vertices.push( new THREE.Vector3( i, 0, - size ) );
-					geometry.vertices.push( new THREE.Vector3( i, 0,   size ) );
-
-				}
-
-				var material = new THREE.LineBasicMaterial( { color: 0x000000, opacity: 0.2, transparent: true } );
-
-				var line = new THREE.Line( geometry, material );
-				line.type = THREE.LinePieces;
+//				var size = 500, step = 50;
+//
+//				var geometry = new THREE.Geometry();
+//
+//				for ( var i = - size; i <= size; i += step ) {
+//
+//					geometry.vertices.push( new THREE.Vector3( - size, 0, i ) );
+//					geometry.vertices.push( new THREE.Vector3(   size, 0, i ) );
+//
+//					geometry.vertices.push( new THREE.Vector3( i, 0, - size ) );
+//					geometry.vertices.push( new THREE.Vector3( i, 0,   size ) );
+//
+//				}
+//
+//				var material = new THREE.LineBasicMaterial( { color: 0x000000, opacity: 0.2, transparent: true } );
+//
+//				var line = new THREE.Line( geometry, material );
+//				line.type = THREE.LinePieces;
+				var line = createGrid(100,10);
 				scene.add( line );
 
 				plane = new THREE.Mesh( new THREE.PlaneGeometry( 1000, 1000 ), new THREE.MeshBasicMaterial() );

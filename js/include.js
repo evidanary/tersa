@@ -34,7 +34,7 @@ function createGrid(blocksRowsColumns) {
 }
 
 //Returns a cube mesh at the given location
-function createEntity(blocksX, blocksY, locationX, locationY, locationZ, name) {
+function createEntity(blocksX, blocksY, locationX, locationY, locationZ, label) {
     //Adds an entity to the grid
     var cubeGeo, cubeMaterial;
     var voxelPosition = new THREE.Vector3();
@@ -48,9 +48,21 @@ function createEntity(blocksX, blocksY, locationX, locationY, locationZ, name) {
     voxel.position.z = locationZ * 50 + 25;
     voxel.matrixAutoUpdate = false;
     voxel.updateMatrix();
-    
-    objects.push( voxel );
-    return voxel;
+    var labelMesh = new THREE.Mesh(new THREE.TextGeometry(label,
+							{size: 12,
+							 height: 4,
+							 curveSegments: 0
+							}), new THREE.MeshNormalMaterial());
+    labelMesh.lookAt(camera.position);
+    labelMesh.position.x = voxel.position.x;
+    labelMesh.position.y = voxel.position.y + 50;
+    labelMesh.position.z = voxel.position.z;
+	
+    var multi = new THREE.Object3D();	   
+    multi.add(voxel);
+    multi.add(labelMesh);
+//    objects.push( multi );
+    return multi;
 }
 
 function createPipe(blockX, blockY, name, fromEntity, toEntity, length) {

@@ -58,11 +58,8 @@ function createEntity(blocksX, blocksY, locationX, locationY, locationZ, label) 
     labelMesh.position.y = voxel.position.y + 50;
     labelMesh.position.z = voxel.position.z;
 	
-    var multi = new THREE.Object3D();	   
-    multi.add(voxel);
-    multi.add(labelMesh);
 //    objects.push( multi );
-    return multi;
+    return [voxel, labelMesh];
 }
 
 function createPipe(blockX, blockY, name, fromEntity, toEntity, length) {

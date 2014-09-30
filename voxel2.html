@@ -19,13 +19,7 @@
 	<body>
 	    <div id="controls">
 		<div id="addCube" style="color:blue;" 
-		  onclick="scene.add(createEntity(1,
-					1,
-					Math.floor(Math.random() * 20) + 1,
-					0,
-					Math.floor(Math.random() * 20) + 1
-					))">
-					Add Cube</div>
+		  onclick="onClickAddCube();"> Add Cube</div>
 		<div id="addPipe" style="color:blue;">Add Pipe</div>
 	    </div>
 
@@ -37,11 +31,11 @@
 		<script>
 
 			//if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
-
+			//Declare vars
 			var container, stats;
 			var camera, scene, renderer;
 			var projector, plane, cube;
-			var mouse2D, mouse3D, raycaster,
+			var mouse2D, mouse3D, raycaster, labels = [],
 			rollOveredFace, isShiftDown = false,
 			theta = 45 , isCtrlDown = false,
 			phi = 60, radius = 1600;
@@ -105,7 +99,9 @@
 
 				// Create Entity
 				var voxel = createEntity(1,1,0,0,0,'First Entity');
-				scene.add(voxel);
+				scene.add(voxel[0]);
+				scene.add(voxel[1]);
+				labels.push(voxel[1]);
 
 				linkTextMesh = new THREE.Mesh(new THREE.TextGeometry("hola senor",
 								{size: 12,
@@ -169,6 +165,20 @@
 
 			}
 			
+			function onClickAddCube() {
+			    voxelLabelPair= createEntity(1,
+					1,
+					Math.floor(Math.random() * 20) + 1,
+					0,
+					Math.floor(Math.random() * 20) + 1
+					);
+			    scene.add(voxelLabelPair[0]);
+			    scene.add(voxelLabelPair[1]);
+			    labels.push(voxelLabelPair[1]);
+			    
+
+	
+			}
 			function onDocumentMouseWheel( event ) {
 
 				radius -= event.wheelDeltaY;
@@ -343,6 +353,9 @@
 
 				camera.lookAt( scene.position );
 				linkTextMesh.lookAt( camera.position ); 
+				for (i = 0; i < labels.length; i++) {
+				  labels[i].lookAt(camera.position);
+				}
 
 				renderer.render( scene, camera );
 

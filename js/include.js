@@ -62,9 +62,71 @@ function createEntity(blocksX, blocksY, locationX, locationY, locationZ, label) 
     return [voxel, labelMesh];
 }
 
-function createPipe(blockX, blockY, name, fromEntity, toEntity, length) {
-    //Adds a pipe from blockX to blockY
+//Returns an array of cylindermesh and labelmesh
+function createPipeUsingCylinder(locationStart, locationEnd, label) {
+    //Adds a pipe from locationX to locationY
+    var cylinder = new THREE.Mesh(new THREE.CylinderGeometry(5, 5, 200, 50, 50, false), 
+				    new THREE.MeshBasicMaterial({ color: 0xff0000}));
+    cylinder.overdraw = true;
+    // The rotation will make sure that we have a diagram where blocks are added on x axis
+    cylinder.rotation.x = Math.PI / 2;
+    cylinder.rotation.z = Math.PI / 2; 								
+    cylinder.visible = true;
+    cylinder.position.x = (locationStart.x - locationEnd.x)/2;
+    cylinder.position.y = (locationStart.y - locationEnd.y)/2;
+    cylinder.position.z = (locationStart.z - locationEnd.z)/2;
+	
+    var labelMesh = new THREE.Mesh(new THREE.TextGeometry(label,
+							{size: 12,
+							 height: 4,
+							 curveSegments: 0
+							}), new THREE.MeshNormalMaterial());
+    labelMesh.lookAt(camera.position);
+    labelMesh.position.x = cylinder.position.x;
+    labelMesh.position.y = cylinder.position.y + 50;
+    labelMesh.position.z = cylinder.position.z;
+							
+    return [cylinder, labelMesh];
 }
+
+//Returns an array of lineMesh and labelMesh
+//This is the preferred method of generating a line
+//locationStart are Vectors
+function createPipe(startVector, endVector, label) {
+    var lineGeo = new THREE.Geometry();
+    lineGeo.vertices.push(startVector);
+    lineGeo.vertices.push(endVector);
+    var lineMaterial = new THREE.LineBasicMaterial({
+			color: 0xff0000,
+			linewidth: 100 
+		    });
+    var lineMesh = new THREE.Line(lineGeo, lineMaterial); 
+	
+    var labelMesh = new THREE.Mesh(new THREE.TextGeometry(label,
+							{size: 12,
+							 height: 4,
+							 curveSegments: 0
+							}), new THREE.MeshNormalMaterial());
+    labelMesh.lookAt(camera.position);
+    labelMesh.position.x = (endVector.x - startVector.x) / 2;
+    labelMesh.position.y = (endVector.y - startVector.y) / 2 + 25;
+    labelMesh.position.z = (endVector.z - startVector.z) / 2;
+    if(labelMesh.position.x == 0) {
+	labelMesh.position.x = endVector.x;
+    }
+    if(labelMesh.position.y == 25) {
+	labelMesh.position.y = endVector.y + 25;
+    }
+    if(labelMesh.position.z == 0) {
+	labelMesh.position.z = endVector.z;
+    }
+    var midpoint = endVector;
+//    midpoint.sub(startVector).divideScalar(2).add(new THREE.Vector3(10,50,0));
+//
+//    labelMesh.position.copy(midpoint);
+    return [lineMesh, labelMesh];
+}
+
 
 function createRegion(blockX, blockY, name) {
     //Adds a region in the global plane

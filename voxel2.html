@@ -25,6 +25,7 @@
 
 		<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.js"></script>
 		<script src="//cdnjs.cloudflare.com/ajax/libs/three.js/r68/three.min.js"></script>
+		<script src="http://cdnjs.cloudflare.com/ajax/libs/stats.js/r11/Stats.min.js"></script>
 		<script src="js/fonts/helvetiker_regular.typeface.js"></script>
 		<script src="js/include.js"></script>
 
@@ -85,36 +86,17 @@
 				cubeMaterial = new THREE.MeshLambertMaterial( { color: 0xfeb74c, ambient: 0x00ff80 } );
 				cubeMaterial.ambient = cubeMaterial.color;
 
-				//Cylinder Relationship Lines
-				var cylinder = new THREE.Mesh(new THREE.CylinderGeometry(5, 5, 200, 50, 50, false), new THREE.MeshNormalMaterial());
-				cylinder.overdraw = true;
-				// The rotation will make sure that we have a diagram where blocks are added on x axis
-				cylinder.rotation.x = Math.PI / 2;
-				cylinder.rotation.z = Math.PI / 2; 								
-				cylinder.visible = true;
-				cylinder.position.x = 200;
-				cylinder.position.y = 25;
-				cylinder.position.z = 275;				
-				scene.add(cylinder);
+				var pipeArr = createPipe(new THREE.Vector3(50, 50, 50),
+							 new THREE.Vector3(500, 50, 50), "Yash");
+				scene.add(pipeArr[0]);
+				scene.add(pipeArr[1]);
+				labels.push(pipeArr[1]);
 
 				// Create Entity
-				var voxel = createEntity(1,1,0,0,0,'First Entity');
-				scene.add(voxel[0]);
-				scene.add(voxel[1]);
-				labels.push(voxel[1]);
-
-				linkTextMesh = new THREE.Mesh(new THREE.TextGeometry("hola senor",
-								{size: 12,
-								 height: 4,
-								 curveSegments: 0
-								}), new THREE.MeshNormalMaterial());
-				
-				linkTextMesh.lookAt(camera.position);
-				linkTextMesh.position.x = 200;
-				linkTextMesh.position.y = 25;
-				linkTextMesh.position.z = 275;	
-				scene.add(linkTextMesh);
-				
+//				var voxel = createEntity(1,1,0,0,0,'First Entity');
+//				scene.add(voxel[0]);
+//				scene.add(voxel[1]);
+//				labels.push(voxel[1]);
 
 				// picking
 
@@ -150,10 +132,10 @@
 
 				container.appendChild( renderer.domElement );
 
-				//stats = new Stats();
-				//stats.domElement.style.position = 'absolute';
-				//stats.domElement.style.top = '0px';
-				//container.appendChild( stats.domElement );
+				stats = new Stats();
+				stats.domElement.style.position = 'absolute';
+				stats.domElement.style.top = '200px';
+				container.appendChild( stats.domElement );
 
 				document.addEventListener( 'mousemove', onDocumentMouseMove, false );
 				document.addEventListener( 'mousedown', onDocumentMouseDown, false );
@@ -175,10 +157,8 @@
 			    scene.add(voxelLabelPair[0]);
 			    scene.add(voxelLabelPair[1]);
 			    labels.push(voxelLabelPair[1]);
-			    
-
-	
 			}
+
 			function onDocumentMouseWheel( event ) {
 
 				radius -= event.wheelDeltaY;
@@ -318,7 +298,7 @@
 				requestAnimationFrame( animate );
 
 				render();
-				//stats.update();
+				stats.update();
 
 			}
 
@@ -352,7 +332,7 @@
 
 
 				camera.lookAt( scene.position );
-				linkTextMesh.lookAt( camera.position ); 
+				// linkTextMesh.lookAt( camera.position ); 
 				for (i = 0; i < labels.length; i++) {
 				  labels[i].lookAt(camera.position);
 				}

@@ -120,10 +120,6 @@ function createPipe(startVector, endVector, label) {
     if(labelMesh.position.z == 0) {
 	labelMesh.position.z = endVector.z;
     }
-    var midpoint = endVector;
-//    midpoint.sub(startVector).divideScalar(2).add(new THREE.Vector3(10,50,0));
-//
-//    labelMesh.position.copy(midpoint);
     return [lineMesh, labelMesh];
 }
 

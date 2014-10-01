@@ -108,9 +108,9 @@ function createPipe(startVector, endVector, label) {
 							 curveSegments: 0
 							}), new THREE.MeshNormalMaterial());
     labelMesh.lookAt(camera.position);
-    labelMesh.position.x = (endVector.x - startVector.x) / 2;
-    labelMesh.position.y = (endVector.y - startVector.y) / 2 + 25;
-    labelMesh.position.z = (endVector.z - startVector.z) / 2;
+    labelMesh.position.x = Math.abs(endVector.x + startVector.x) / 2;
+    labelMesh.position.y = Math.abs(endVector.y + startVector.y) / 2 + 25;
+    labelMesh.position.z = Math.abs(endVector.z + startVector.z) / 2;
     if(labelMesh.position.x == 0) {
 	labelMesh.position.x = endVector.x;
     }

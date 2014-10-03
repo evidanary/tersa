@@ -34,18 +34,21 @@ function createGrid(blocksRowsColumns) {
 }
 
 //Returns a cube mesh at the given location
-function createEntity(blocksX, blocksY, locationX, locationY, locationZ, label) {
+function createEntity(blocksX, blocksY, blocksZ, locationX, locationY, locationZ, label) {
     //Adds an entity to the grid
     var cubeGeo, cubeMaterial;
+    var blockSize = 50;
     var voxelPosition = new THREE.Vector3();
-    cubeGeo = new THREE.BoxGeometry( 50, 50, 50 );
+    cubeGeo = new THREE.BoxGeometry( blockSize * blocksX, blockSize * blocksY, blockSize * blocksZ );
     cubeMaterial = new THREE.MeshLambertMaterial( { color: 0xfeb74c, ambient: 0x00ff80 } );
+    // Lookout Colors 
+    //cubeMaterial = new THREE.MeshLambertMaterial( { color: 0x66E066, ambient: 0x00ff80 } );
     cubeMaterial.ambient = cubeMaterial.color;
 
     var voxel = new THREE.Mesh( cubeGeo, cubeMaterial );
-    voxel.position.x = locationX * 50 + 25;
-    voxel.position.y = locationY * 50 + 25;
-    voxel.position.z = locationZ * 50 + 25;
+    voxel.position.x = locationX * 50 + (blockSize * blocksX)/2;
+    voxel.position.y = locationY * 50 + (blockSize * blocksX)/2;
+    voxel.position.z = locationZ * 50 + (blockSize * blocksZ)/2;
     voxel.matrixAutoUpdate = false;
     voxel.updateMatrix();
     var labelMesh = new THREE.Mesh(new THREE.TextGeometry(label,
@@ -98,7 +101,7 @@ function createPipe(startVector, endVector, label) {
     lineGeo.vertices.push(endVector);
     var lineMaterial = new THREE.LineBasicMaterial({
 			color: 0xff0000,
-			linewidth: 100 
+			linewidth: 50 
 		    });
     var lineMesh = new THREE.Line(lineGeo, lineMaterial); 
 	

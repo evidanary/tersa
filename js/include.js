@@ -101,7 +101,7 @@ function createPipe(startVector, endVector, label) {
     lineGeo.vertices.push(endVector);
     var lineMaterial = new THREE.LineBasicMaterial({
 			color: 0xff0000,
-			linewidth: 50 
+			linewidth: 10 
 		    });
     var lineMesh = new THREE.Line(lineGeo, lineMaterial); 
 	
@@ -109,7 +109,11 @@ function createPipe(startVector, endVector, label) {
 							{size: 12,
 							 height: 4,
 							 curveSegments: 0
-							}), new THREE.MeshNormalMaterial());
+							}), new THREE.LineBasicMaterial({
+				    			color: 0xff0000,
+				    			linewidth: 20 
+				    		    }));
+//new THREE.MeshNormalMaterial());
     labelMesh.lookAt(camera.position);
     labelMesh.position.x = Math.abs(endVector.x + startVector.x) / 2;
     labelMesh.position.y = Math.abs(endVector.y + startVector.y) / 2 + 25;

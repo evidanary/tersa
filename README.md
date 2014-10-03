@@ -1,0 +1,18 @@
+Tersa
+===
+
+Tersa lets you generate 3D models of systems fast
+
+TODO:
+
+- Better pipe label positioning and geometry
+- Sliding Panel for interacting with the scene
+- Onhover info in detail(eg html pages and clickable links)
+- Camera flyby(parabolic camera paths)
+- Fixed Camera points for POV
+- 2d snapshot of 3d scene(better than label lookat)
+- Build from supplied JSON
+- Create Server
+- Create Markup Language
+- Connecting multiple scenes
+- Showing mulitple scenes

@@ -47,7 +47,7 @@ function createEntity(blocksX, blocksY, blocksZ, locationX, locationY, locationZ
 
     var voxel = new THREE.Mesh( cubeGeo, cubeMaterial );
     voxel.position.x = locationX * 50 + (blockSize * blocksX)/2;
-    voxel.position.y = locationY * 50 + (blockSize * blocksX)/2;
+    voxel.position.y = locationY + (blockSize * blocksY)/2;
     voxel.position.z = locationZ * 50 + (blockSize * blocksZ)/2;
     voxel.matrixAutoUpdate = false;
     voxel.updateMatrix();
@@ -58,7 +58,7 @@ function createEntity(blocksX, blocksY, blocksZ, locationX, locationY, locationZ
 							}), new THREE.MeshNormalMaterial());
     labelMesh.lookAt(camera.position);
     labelMesh.position.x = voxel.position.x;
-    labelMesh.position.y = voxel.position.y + 50;
+    labelMesh.position.y = blocksY * blockSize + 50;//voxel.position.y + 50;
     labelMesh.position.z = voxel.position.z;
 	
 //    objects.push( multi );

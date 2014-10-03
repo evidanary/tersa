@@ -23,13 +23,14 @@
 		<script src="http://cdnjs.cloudflare.com/ajax/libs/stats.js/r11/Stats.min.js"></script>
 		<script src="js/fonts/helvetiker_regular.typeface.js"></script>
 		<script src="js/include.js"></script>
+		<script src="js/OrbitControls.js"></script>
 
 		<script>
 
 			//if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
 			//Declare vars
 			var container, stats;
-			var camera, scene, renderer;
+			var camera, scene, renderer, controls;
 			var projector, plane, cube;
 			var mouse2D, mouse3D, raycaster, labels = [], entities = [],
 			rollOveredFace, isShiftDown = false,
@@ -66,9 +67,9 @@
 				camera.position.y = 800;
 				camera.position.z = 800;
 
-				//controls = new THREE.OrbitControls( camera );
-				//controls.damping = 0.2;
-				//controls.addEventListener( 'change', render );
+				controls = new THREE.OrbitControls( camera );
+				controls.damping = 0.2;
+				controls.addEventListener( 'change', render );
 
 				scene = new THREE.Scene();
 				scene.position.x = Math.ceil(gridExpanseInVoxels * 50 / 2);
@@ -93,6 +94,8 @@
 				origin.updateMatrix();
 				scene.add( origin );
 
+				// Kickstart the scene with prefab objects
+				generateKickStartObjects();
 
 				// Pipes
 //				var pipeArr = createPipe(new THREE.Vector3(50, 50, 50),
@@ -186,14 +189,35 @@
 			    labels.push(voxelLabelPair[1]);
 			}
 
-			function onDocumentMouseWheel( event ) {
-				radius -= event.wheelDeltaY;
-				camera.position.x = radius * Math.sin( theta * Math.PI / 360 ) * Math.cos( phi * Math.PI / 360 );
-				camera.position.y = radius * Math.sin( phi * Math.PI / 360 );
-				camera.position.z = radius * Math.cos( theta * Math.PI / 360 ) * Math.cos( phi * Math.PI / 360 );
-				camera.updateMatrix();
+			function generateKickStartObjects() {
+			    var baseX = Math.floor(Math.random() * 20) + 1;
+			    var baseZ = Math.floor(Math.random() * 20) + 1;
+			    var small = { x: 2, y: 1, z: 1};
+			    var medium = { x: 3, y: 2, z: 1};
+			    var large = { x: 5, y:3, z: 2};
 
-				render();
+			    addKickStartObjectToScene(createEntity(small.x,small.y,small.z,6,0,0,"6-0"),"6-0");
+			    addKickStartObjectToScene(createEntity(small.x,small.y,small.z,11,0,0,"11-0"),"11-0");
+			    addKickStartObjectToScene(createEntity(1,1,6,9,0,3,"9-3"),"9-3");
+			    addKickStartObjectToScene(createEntity(medium.x,medium.y,medium.z,8,0,11,"8-11"),"8-11");
+			    addKickStartObjectToScene(createEntity(large.x,large.y,large.z,7,0,15,"7-15"),"7-15");
+			}
+			
+			function addKickStartObjectToScene(voxelLabelPair, id) {
+			    scene.add(voxelLabelPair[0]);
+			    scene.add(voxelLabelPair[1]);
+			    entities.push({ "id": id, "val" : voxelLabelPair[0]});
+			    labels.push(voxelLabelPair[1]);
+			}
+
+			function onDocumentMouseWheel( event ) {
+//				radius -= event.wheelDeltaY;
+//				camera.position.x = radius * Math.sin( theta * Math.PI / 360 ) * Math.cos( phi * Math.PI / 360 );
+//				camera.position.y = radius * Math.sin( phi * Math.PI / 360 );
+//				camera.position.z = radius * Math.cos( theta * Math.PI / 360 ) * Math.cos( phi * Math.PI / 360 );
+//				camera.updateMatrix();
+//
+//				render();
 			}
 
 
@@ -228,9 +252,9 @@
 			}
 
 			function onDocumentMouseMove( event ) {
-				event.preventDefault();
-				mouse2D.x = ( event.clientX / window.innerWidth ) * 2 - 1;
-				mouse2D.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+ //				event.preventDefault();
+ 				mouse2D.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+ 				mouse2D.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
 			}
 
 			function onDocumentMouseDown( event ) {
@@ -282,9 +306,9 @@
 
 			function render() {
 				if ( isCtrlDown ) {
-					theta += mouse2D.x * 1.5;
-					camera.position.x = 1400 * Math.sin( THREE.Math.degToRad( theta ) );
-					camera.position.z = 1400 * Math.cos( THREE.Math.degToRad( theta ) );
+//					theta += mouse2D.x * 1.5;
+//					camera.position.x = 1400 * Math.sin( THREE.Math.degToRad( theta ) );
+//					camera.position.z = 1400 * Math.cos( THREE.Math.degToRad( theta ) );
 				}
 
 				raycaster = projector.pickingRay( mouse2D.clone(), camera );

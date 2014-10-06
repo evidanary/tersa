@@ -6,7 +6,6 @@ Tersa lets you generate 3D models of systems fast
 TODO:
 
 - Better pipe label positioning and geometry
-- Sliding Panel for interacting with the scene
 - Onhover info in detail(eg html pages and clickable links)
 - Camera flyby(parabolic camera paths)
 - Fixed Camera points for POV

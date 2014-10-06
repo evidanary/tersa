@@ -20,7 +20,8 @@
 
 		<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.js"></script>
 		<script src="//cdnjs.cloudflare.com/ajax/libs/three.js/r68/three.min.js"></script>
-		<script src="http://cdnjs.cloudflare.com/ajax/libs/stats.js/r11/Stats.min.js"></script>
+		<script src="//cdnjs.cloudflare.com/ajax/libs/dat-gui/0.5/dat.gui.js"></script>
+		<script src="//cdnjs.cloudflare.com/ajax/libs/stats.js/r11/Stats.min.js"></script>
 		<script src="js/fonts/helvetiker_regular.typeface.js"></script>
 		<script src="js/include.js"></script>
 		<script src="js/OrbitControls.js"></script>
@@ -40,12 +41,13 @@
 			var rollOverMesh, rollOverMaterial;
 			var voxelPosition = new THREE.Vector3(), tmpVec = new THREE.Vector3(), normalMatrix = new THREE.Matrix3();
 			var cubeGeo, cubeMaterial;
-			var linkTextMesh;
+			var linkTextMesh, guiParameters;
 			var i, intersector;
 
 			var objects = [];
 
 			init();
+			generateGUIPanel();
 			animate();
 
 			function init() {
@@ -155,6 +157,29 @@
 
 				window.addEventListener( 'resize', onWindowResize, false );
 
+					
+			}
+
+			function generateGUIPanel() {
+				guiParameters = {
+				    visible: true
+				};
+
+				//GUI
+				gui = new dat.GUI();
+				var labelsVisible = gui.add( guiParameters, 'visible' ).name('Labels Visible?').listen();
+				labelsVisible.onChange(function(value) 
+				     {  for(i=0;i<labels.length;i++) { labels[i].visible = value;}  	});
+				gui.open();
+				//var folder1 = gui.addFolder('Position');
+				//folder1.open();
+
+				//var cubeX = folder1.add( parameters, 'x' ).min(-200).max(200).step(1).listen();
+
+//				var cubeColor = gui.addColor( parameters, 'color' ).name('Color').listen();
+ //					cubeColor.onChange(function(value) // onFinishChange
+ //					    {   cube.material.color.setHex( value.replace("#", "0x") );   });
+	
 			}
 
 			function connectEntities(startEntity, endEntity, label) {

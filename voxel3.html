@@ -224,26 +224,38 @@
 			function generateKickStartObjects() {
 			    var baseX = Math.floor(Math.random() * 20) + 1;
 			    var baseZ = Math.floor(Math.random() * 20) + 1;
-			    var small = { x: 2, y: 1, z: 1};
-			    var medium = { x: 3, y: 2, z: 1};
-			    var large = { x: 5, y:3, z: 2};
+			    var small = { x: 1, y: 1, z: 2};
+			    var medium = { x: 1, y: 2, z: 3};
+			    var large = { x: 2, y:3, z: 5};
 			    var long = { x: 1, y:1, z: 6};
-			    var payloadEntities = [];
 
+			    //Region 0
 			    //PayLoad Entities
-			    payloadEntities.push({ size: small, region: 1, position: {}, name: "FlexD", label: "FlexD"});
-			    payloadEntities.push({ size: small, region: 1, position: {}, name: "L4E", label: "L4E"});
+			    var payloadEntities = [];
+			    payloadEntities.push({ size: small, region: 0, position: {}, name: "FlexD", label: "FlexD"});
+			    payloadEntities.push({ size: small, region: 0, position: {}, name: "L4E", label: "L4E"});
+			    addRegionToScene(0, payloadEntities);
 
-			    var entitiesWithLocation = getEntityLocationArray(1,20,4,payloadEntities);
-			    console.log(entitiesWithLocation);
-			    for(i=0;i<entitiesWithLocation.length;i++) {
-			      var entity = entitiesWithLocation[i];
-			      console.log(entity);
-			      addKickStartObjectToScene(createEntity(entity.size.x, entity.size.y, entity.size.z,
-			        entity.position.x,entity.position.y,entity.position.z,
-			        entity.name),entity.label);
-			    }
 			    //Region 1
+			    payloadEntities = [];
+			    payloadEntities.push({ size: medium, region: 1, position: {}, name: "Kafka", label: "Kafka"});
+			    addRegionToScene(1, payloadEntities);
+
+			    //Region 2
+			    payloadEntities = [];
+			    payloadEntities.push({ size: medium, region: 1, position: {}, name: "Storm", label: "Storm"});
+			    addRegionToScene(2, payloadEntities);
+
+			    //Region 3
+			    payloadEntities = [];
+			    payloadEntities.push({ size: large, region: 1, position: {}, name: "Hadoop", label: "Hadoop"});
+			    addRegionToScene(3, payloadEntities);
+
+
+
+
+
+
 			    //addKickStartObjectToScene(createEntity(small.x,small.y,small.z,6,0,0,"FlexD"),"FlexD");
 			    //addKickStartObjectToScene(createEntity(small.x,small.y,small.z,11,0,0,"L4E"),"L4E");
 			    //Region 2
@@ -252,13 +264,23 @@
 			   // addKickStartObjectToScene(createEntity(medium.x,medium.y,medium.z,8,0,11,"Storm"),"Storm");
 			    //Region
 			    //addKickStartObjectToScene(createEntity(large.x,large.y,large.z,7,0,15,"HADOOP"),"HADOOP");
-			    //connectEntities("FlexD", "Kafka", "write");
-			    //connectEntities("L4E", "Kafka", "write");
-			    //connectEntities("Kafka", "Storm", "read");
-			    //connectEntities("Storm", "HADOOP", "store");
+			    connectEntities("FlexD", "Kafka", "write");
+			    connectEntities("L4E", "Kafka", "write");
+			    connectEntities("Kafka", "Storm", "read");
+			    connectEntities("Storm", "Hadoop", "store");
 			}
 
 			//PayloadEntity = { size: small|medium|large|long, region = "1|2|3....", position = "", name: "", label: "" }
+
+			function addRegionToScene(regionNumber, payloadEntities) {
+			    var entitiesWithLocation = getEntityLocationArray(regionNumber,20,4,payloadEntities);
+			    for(i=0;i<entitiesWithLocation.length;i++) {
+			      var entity = entitiesWithLocation[i];
+			      addKickStartObjectToScene(createEntity(entity.size.x, entity.size.y, entity.size.z,
+			        entity.position.x,entity.position.y,entity.position.z,
+			        entity.name),entity.label);
+			    }
+			}
 
 			function getEntityLocationArray(regionNumber, gridNumberOfBlocks, totalRegions, entityArray){
         	          var entityCount = entityArray.length;
@@ -276,22 +298,22 @@
 			  var entitySeparationBlocks = getSeparationBlocks(gridNumberOfBlocks,entityAccumulatedLength,entityCount);
 			  entitySeparationBlocks = Math.min(maxEntitySeparationBlocks,entitySeparationBlocks);
 			  countTopPadding = Math.floor((gridNumberOfBlocks - entityAccumulatedLength - entitySeparationBlocks)/2);
-console.log(entitySeparationBlocks);
+			  
 			  blockZPointer += countTopPadding; 
 			  //Set the position of the entity
 			  for(i=0;i<entityCount;i++) {
 			    entityArray[i].position.x = regionStartBlockX;
 			    entityArray[i].position.y = 0;
 			    entityArray[i].position.z = blockZPointer;
-			    blockZPointer += entitySeparationBlocks; 
+			    blockZPointer += entitySeparationBlocks + entityArray[i].size.z; 
 			  }
-console.log("This is in getentitylocatinarry");
-console.log(entityArray);
+
 			  return entityArray;
 			}
 
 			// Get the maximum number of separation blocks between entities possible without overflowing the grid dimensions 
 			function getSeparationBlocks(totalBlocks, usedBlocks, entityCount) {
+			  if (entityCount == 1) return 0;
 			  var emptyBlocks = totalBlocks - usedBlocks;
 			  var result = 1;
 			  while (emptyBlocks > (result+1)*(entityCount-1)) {

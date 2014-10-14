@@ -18,10 +18,14 @@
 	</head>
 	<body>
 
-		<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.js"></script>
-		<script src="//cdnjs.cloudflare.com/ajax/libs/three.js/r68/three.min.js"></script>
-		<script src="//cdnjs.cloudflare.com/ajax/libs/dat-gui/0.5/dat.gui.js"></script>
-		<script src="//cdnjs.cloudflare.com/ajax/libs/stats.js/r11/Stats.min.js"></script>
+		<script src="js/jquery.js"></script>
+		<!--<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.js"></script>-->
+		<script src="js/three.min.js"></script>
+		<!--<script src="//cdnjs.cloudflare.com/ajax/libs/three.js/r68/three.min.js"></script>-->
+		<script src="js/dat.gui.js"></script>
+		<!--<script src="//cdnjs.cloudflare.com/ajax/libs/dat-gui/0.5/dat.gui.js"></script>-->
+		<script src="js/Stats.min.js"></script>
+		<!--<script src="//cdnjs.cloudflare.com/ajax/libs/stats.js/r11/Stats.min.js"></script>-->
 		<script src="js/fonts/helvetiker_regular.typeface.js"></script>
 		<script src="js/include.js"></script>
 		<script src="js/OrbitControls.js"></script>
@@ -169,7 +173,7 @@
 				gui = new dat.GUI();
 				var labelsVisible = gui.add( guiParameters, 'visible' ).name('Labels Visible?').listen();
 				labelsVisible.onChange(function(value) 
-				     {  for(i=0;i<labels.length;i++) { labels[i].visible = value;}  	});
+				     {  for(i=0;i<labels.length;i++) { labels[i].visible = value;}; render();  	});
 				gui.open();
 				//var folder1 = gui.addFolder('Position');
 				//folder1.open();
@@ -223,16 +227,78 @@
 			    var small = { x: 2, y: 1, z: 1};
 			    var medium = { x: 3, y: 2, z: 1};
 			    var large = { x: 5, y:3, z: 2};
+			    var long = { x: 1, y:1, z: 6};
+			    var payloadEntities = [];
 
-			    addKickStartObjectToScene(createEntity(small.x,small.y,small.z,6,0,0,"FlexD"),"FlexD");
-			    addKickStartObjectToScene(createEntity(small.x,small.y,small.z,11,0,0,"L4E"),"L4E");
-			    addKickStartObjectToScene(createEntity(1,1,6,9,0,3,"Kafka"),"Kafka");
-			    addKickStartObjectToScene(createEntity(medium.x,medium.y,medium.z,8,0,11,"Storm"),"Storm");
-			    addKickStartObjectToScene(createEntity(large.x,large.y,large.z,7,0,15,"HADOOP"),"HADOOP");
-			    connectEntities("FlexD", "Kafka", "write");
-			    connectEntities("L4E", "Kafka", "write");
-			    connectEntities("Kafka", "Storm", "read");
-			    connectEntities("Storm", "HADOOP", "store");
+			    //PayLoad Entities
+			    payloadEntities.push({ size: small, region: 1, position: {}, name: "FlexD", label: "FlexD"});
+			    payloadEntities.push({ size: small, region: 1, position: {}, name: "L4E", label: "L4E"});
+
+			    var entitiesWithLocation = getEntityLocationArray(1,20,4,payloadEntities);
+			    console.log(entitiesWithLocation);
+			    for(i=0;i<entitiesWithLocation.length;i++) {
+			      var entity = entitiesWithLocation[i];
+			      console.log(entity);
+			      addKickStartObjectToScene(createEntity(entity.size.x, entity.size.y, entity.size.z,
+			        entity.position.x,entity.position.y,entity.position.z,
+			        entity.name),entity.label);
+			    }
+			    //Region 1
+			    //addKickStartObjectToScene(createEntity(small.x,small.y,small.z,6,0,0,"FlexD"),"FlexD");
+			    //addKickStartObjectToScene(createEntity(small.x,small.y,small.z,11,0,0,"L4E"),"L4E");
+			    //Region 2
+			   // addKickStartObjectToScene(createEntity(long.x,long.y,long.z,9,0,3,"Kafka"),"Kafka");
+			    //Region 3
+			   // addKickStartObjectToScene(createEntity(medium.x,medium.y,medium.z,8,0,11,"Storm"),"Storm");
+			    //Region
+			    //addKickStartObjectToScene(createEntity(large.x,large.y,large.z,7,0,15,"HADOOP"),"HADOOP");
+			    //connectEntities("FlexD", "Kafka", "write");
+			    //connectEntities("L4E", "Kafka", "write");
+			    //connectEntities("Kafka", "Storm", "read");
+			    //connectEntities("Storm", "HADOOP", "store");
+			}
+
+			//PayloadEntity = { size: small|medium|large|long, region = "1|2|3....", position = "", name: "", label: "" }
+
+			function getEntityLocationArray(regionNumber, gridNumberOfBlocks, totalRegions, entityArray){
+        	          var entityCount = entityArray.length;
+	                  var regionStartBlockX = Math.floor(gridNumberOfBlocks/totalRegions)*regionNumber;
+			  var countTopPadding = 0;
+			  var entityAccumulatedLength = 0;
+
+			  for(i=0;i<entityCount;i++) {
+			    entityAccumulatedLength += entityArray[i].size.z;
+			  }
+			  
+			  //Maximum Ambient number of empty blocks between entities of same region
+			  var maxEntitySeparationBlocks = 3;
+			  var blockZPointer = 0;
+			  var entitySeparationBlocks = getSeparationBlocks(gridNumberOfBlocks,entityAccumulatedLength,entityCount);
+			  entitySeparationBlocks = Math.min(maxEntitySeparationBlocks,entitySeparationBlocks);
+			  countTopPadding = Math.floor((gridNumberOfBlocks - entityAccumulatedLength - entitySeparationBlocks)/2);
+console.log(entitySeparationBlocks);
+			  blockZPointer += countTopPadding; 
+			  //Set the position of the entity
+			  for(i=0;i<entityCount;i++) {
+			    entityArray[i].position.x = regionStartBlockX;
+			    entityArray[i].position.y = 0;
+			    entityArray[i].position.z = blockZPointer;
+			    blockZPointer += entitySeparationBlocks; 
+			  }
+console.log("This is in getentitylocatinarry");
+console.log(entityArray);
+			  return entityArray;
+			}
+
+			// Get the maximum number of separation blocks between entities possible without overflowing the grid dimensions 
+			function getSeparationBlocks(totalBlocks, usedBlocks, entityCount) {
+			  var emptyBlocks = totalBlocks - usedBlocks;
+			  var result = 1;
+			  while (emptyBlocks > (result+1)*(entityCount-1)) {
+			    result += 1;
+			  }
+
+			  return result;
 			}
 			
 			function addKickStartObjectToScene(voxelLabelPair, id) {

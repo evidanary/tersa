@@ -14,3 +14,7 @@ TODO:
 - Create Markup Language
 - Connecting multiple scenes
 - Showing mulitple scenes
+
+
+Helpful Links:
+1. Spline editor: http://jabtunes.com/labs/3d/spline3editor.html

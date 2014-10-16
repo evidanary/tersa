@@ -50,11 +50,25 @@
 
 			var objects = [];
 			var cameraFlyByFlag = false;
-			var pathCamera = new THREE.Spline([
+			var cameraFlyByTime = 20000; //Time in milliseconds
+			// This does a basic survey of the map, going through all 4 corners of the grid
+			basicCameraWaypoints = [
 				new THREE.Vector3(0,1000,1000), 
 				new THREE.Vector3(1000,1000,1000), 
+				new THREE.Vector3(1000,1000,0),
+				new THREE.Vector3(0,1000,0),
 				new THREE.Vector3(0,1000,1000)
-			]);
+			];
+			complexCameraWaypoints = [
+				new THREE.Vector3(0,0,500), 
+				new THREE.Vector3(-800,200,800), 
+				new THREE.Vector3(0,200,1000), 
+				new THREE.Vector3(1500,800,500),
+				new THREE.Vector3(0,200,100),
+				new THREE.Vector3(0,0,500)
+			];
+
+			var pathCamera = new THREE.Spline(complexCameraWaypoints);
 
 			init();
 			generateGUIPanel();
@@ -76,12 +90,13 @@
 
 				camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 10000 );
 				//initialize the camera position at startup
-				camera.position.x = 0;
+				camera.position.x = 500;
 				camera.position.y = 800;
-				camera.position.z = 800;
+				camera.position.z = 1200;
 
 				controls = new THREE.OrbitControls( camera );
 				controls.damping = 0.5;
+				controls.target = new THREE.Vector3(500, 250, 500);
 				controls.addEventListener( 'change', render );
 
 				scene = new THREE.Scene();
@@ -186,7 +201,7 @@
 				     {  for(i=0;i<labels.length;i++) { labels[i].visible = value;}; render();  	});
 				var cameraFlyBy = gui.add( cameraControls, 'flyby' ).name('Camera Fly By').listen();
 				cameraFlyBy.onChange(function(value) 
-				     {  cameraFlyByFlag = true;  	});
+				     {  cameraFlyByFlag = value;  	});
 				gui.open();
 				//var folder1 = gui.addFolder('Position');
 				//folder1.open();
@@ -494,7 +509,7 @@
 				}
 
 				if(cameraFlyByFlag === true) {
-				  camera.position.copy(pathCamera.getPoint(Date.now() % 10000 / 10000));
+				  camera.position.copy(pathCamera.getPoint(Date.now() % cameraFlyByTime / cameraFlyByTime));
 				}
 
 

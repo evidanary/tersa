@@ -49,6 +49,12 @@
 			var i, intersector;
 
 			var objects = [];
+			var cameraFlyByFlag = false;
+			var pathCamera = new THREE.Spline([
+				new THREE.Vector3(0,1000,1000), 
+				new THREE.Vector3(1000,1000,1000), 
+				new THREE.Vector3(0,1000,1000)
+			]);
 
 			init();
 			generateGUIPanel();
@@ -169,11 +175,18 @@
 				    visible: true
 				};
 
+				cameraControls = {
+				  flyby: false
+				};
+
 				//GUI
 				gui = new dat.GUI();
 				var labelsVisible = gui.add( guiParameters, 'visible' ).name('Labels Visible?').listen();
 				labelsVisible.onChange(function(value) 
 				     {  for(i=0;i<labels.length;i++) { labels[i].visible = value;}; render();  	});
+				var cameraFlyBy = gui.add( cameraControls, 'flyby' ).name('Camera Fly By').listen();
+				cameraFlyBy.onChange(function(value) 
+				     {  cameraFlyByFlag = true;  	});
 				gui.open();
 				//var folder1 = gui.addFolder('Position');
 				//folder1.open();
@@ -221,6 +234,42 @@
 			    labels.push(voxelLabelPair[1]);
 			}
 
+
+			function generateKickStartObjects2() {
+			    var small = { x: 1, y: 1, z: 2};
+			    var medium = { x: 1, y: 2, z: 3};
+			    var large = { x: 2, y:3, z: 5};
+
+			    //Region 0
+			    //PayLoad Entities
+			    var payloadEntities = [];
+			    payloadEntities.push({ size: small, region: 0, position: {}, name: "FlexD", label: "FlexD"});
+			    payloadEntities.push({ size: small, region: 0, position: {}, name: "Micropush", label: "Micropush"});
+			    addRegionToScene(0, payloadEntities);
+
+			    //Region 1
+			    payloadEntities = [];
+			    payloadEntities.push({ size: medium, region: 1, position: {}, name: "Kafka", label: "Kafka"});
+			    addRegionToScene(1, payloadEntities);
+
+			    //Region 2
+			    payloadEntities = [];
+			    payloadEntities.push({ size: medium, region: 2, position: {}, name: "Storm", label: "Storm"});
+			    addRegionToScene(2, payloadEntities);
+
+			    //Region 3
+			    payloadEntities = [];
+			    payloadEntities.push({ size: large, region: 3, position: {}, name: "Hadoop", label: "Hadoop"});
+			    addRegionToScene(3, payloadEntities);
+
+			    //Add Connection Lines
+			    connectEntities("FlexD", "Kafka", "write");
+			    connectEntities("Micropush", "Kafka", "write");
+			    connectEntities("Kafka", "Storm", "read");
+			    connectEntities("Storm", "Hadoop", "store");
+			}
+
+
 			function generateKickStartObjects() {
 			    var baseX = Math.floor(Math.random() * 20) + 1;
 			    var baseZ = Math.floor(Math.random() * 20) + 1;
@@ -243,16 +292,13 @@
 
 			    //Region 2
 			    payloadEntities = [];
-			    payloadEntities.push({ size: medium, region: 1, position: {}, name: "Storm", label: "Storm"});
+			    payloadEntities.push({ size: medium, region: 2, position: {}, name: "Storm", label: "Storm"});
 			    addRegionToScene(2, payloadEntities);
 
 			    //Region 3
 			    payloadEntities = [];
-			    payloadEntities.push({ size: large, region: 1, position: {}, name: "Hadoop", label: "Hadoop"});
+			    payloadEntities.push({ size: large, region: 3, position: {}, name: "Hadoop", label: "Hadoop"});
 			    addRegionToScene(3, payloadEntities);
-
-
-
 
 
 
@@ -446,6 +492,11 @@
 				for (i = 0; i < labels.length; i++) {
 				  labels[i].lookAt(camera.position);
 				}
+
+				if(cameraFlyByFlag === true) {
+				  camera.position.copy(pathCamera.getPoint(Date.now() % 10000 / 10000));
+				}
+
 
 				renderer.render( scene, camera );
 			}

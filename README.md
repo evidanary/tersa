@@ -10,7 +10,6 @@ TODO:
 - Camera flyby(parabolic camera paths)
 - Fixed Camera points for POV
 - 2d snapshot of 3d scene(better than label lookat)
-- Build from supplied JSON
 - Create Server
 - Create Markup Language
 - Connecting multiple scenes

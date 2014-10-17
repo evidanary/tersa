@@ -17,7 +17,7 @@
 	  </style>
 	</head>
 	<body>
-
+		<script src="js/Tween.js"></script>
 		<script src="js/jquery.js"></script>
 		<!--<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.js"></script>-->
 		<script src="js/three.min.js"></script>
@@ -29,6 +29,7 @@
 		<script src="js/fonts/helvetiker_regular.typeface.js"></script>
 		<script src="js/include.js"></script>
 		<script src="js/OrbitControls.js"></script>
+
 
 		<script>
 
@@ -47,6 +48,7 @@
 			var cubeGeo, cubeMaterial;
 			var linkTextMesh, guiParameters;
 			var i, intersector;
+			var tween;
 
 			var objects = [];
 			var cameraFlyByFlag = false;
@@ -63,7 +65,7 @@
 				new THREE.Vector3(0,0,500), 
 				new THREE.Vector3(-800,200,800), 
 				new THREE.Vector3(0,200,1000), 
-				new THREE.Vector3(1500,800,500),
+				new THREE.Vector3(1800,800,500),
 				new THREE.Vector3(-500,200,100),
 				new THREE.Vector3(0,0,500)
 			];
@@ -85,7 +87,7 @@
 				info.style.width = '100%';
 				info.style.textAlign = 'center';
 				info.innerHTML = '<strong>Tersa</strong>';
-//				info.innerHTML = '<a href="http://threejs.org" target="_blank">three.js</a> - voxel painter - webgl<br><strong>click</strong>: add voxel, <strong>shift + click</strong>: remove voxel, <strong>control</strong>: rotate<div id="controls"><div id="addCube" style="color:blue;" onclick="onClickAddCube(1,1,1);"> <a href="#">Add Cube</a></div><div id="addMysql" style="color:blue;"onclick="onClickAddCube(2,2,3);"><a href="#">Add MySQL</a></div></div>';
+
 				container.appendChild( info );
 
 				camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 10000 );
@@ -125,8 +127,9 @@
 				scene.add( origin );
 
 				// Kickstart the scene with prefab objects
-				generateKickStartObjects();
-
+				//generateKickStartObjects();
+				generateKickStartObjects2();
+				
 				// picking
 				projector = new THREE.Projector();
 
@@ -165,12 +168,15 @@
 				container.appendChild( stats.domElement );
 
 			//	document.addEventListener( 'mousemove', onDocumentMouseMove, false );
+			
+				
 				window.addEventListener( 'resize', onWindowResize, false );
 			}
 
 			function generateGUIPanel() {
 				guiParameters = {
-				    visible: true
+				    visible: true,
+				    printsnapshot: false
 				};
 
 				cameraControls = {
@@ -185,6 +191,33 @@
 				var cameraFlyBy = gui.add( cameraControls, 'flyby' ).name('Camera Fly By').listen();
 				cameraFlyBy.onChange(function(value) 
 				     {  cameraFlyByFlag = value;  	});
+				var printSnapshot = gui.add( guiParameters, 'printsnapshot' )
+									.name('2D Snapshot').listen();
+				printSnapshot.onChange(function(value) 
+				     {  
+				       if(value === true) {
+						   tween = new TWEEN.Tween(camera.position).to({
+								x: 500,
+								y: 1500,
+								z: 500
+							},2000)
+							.easing(TWEEN.Easing.Linear.None)
+							.onComplete(function () {camera.lookAt({
+								x: 500,
+								y: 0,
+								z: 500
+							})})
+							.start();
+							
+							tween = new TWEEN.Tween(controls.target).to({
+								x: 500,
+								y: 0,
+								z: 500
+							},2000)
+							.easing(TWEEN.Easing.Linear.None)
+							.start();
+						}  	
+					});				     
 				gui.open();
 				//var folder1 = gui.addFolder('Position');
 				//folder1.open();
@@ -231,6 +264,7 @@
 			    var small = { x: 1, y: 1, z: 2};
 			    var medium = { x: 1, y: 2, z: 3};
 			    var large = { x: 2, y:3, z: 5};
+ 			    var flatLarge = { x: 3, y:2, z: 5};
 
 			    //Region 0
 			    //PayLoad Entities
@@ -241,7 +275,12 @@
 
 			    //Region 1
 			    payloadEntities = [];
-			    payloadEntities.push({ size: medium, region: 1, position: {}, name: "Kafka", label: "Kafka"});
+			    payloadEntities.push({ size: flatLarge, 
+			    						region: 1, 
+			    						position: {},
+			    						opacity: 0.3, 
+			    						name: "Kafka", 
+			    						label: "Kafka"});
 			    addRegionToScene(1, payloadEntities);
 
 			    //Region 2
@@ -304,9 +343,7 @@
 			    var entitiesWithLocation = getEntityLocationArray(regionNumber,20,4,payloadEntities);
 			    for(i=0;i<entitiesWithLocation.length;i++) {
 			      var entity = entitiesWithLocation[i];
-			      addKickStartObjectToScene(createEntity(entity.size.x, entity.size.y, entity.size.z,
-			        entity.position.x,entity.position.y,entity.position.z,
-			        entity.name),entity.label);
+			      addKickStartObjectToScene(createEntity(entity),entity.name);
 			    }
 			}
 
@@ -427,6 +464,7 @@
 
 				stats.update();
 				controls.update();
+				TWEEN.update();
 			}
 
 			function render() {

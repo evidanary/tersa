@@ -34,34 +34,37 @@ function createGrid(blocksRowsColumns) {
 }
 
 //Returns a cube mesh at the given location
-function createEntity(blocksX, blocksY, blocksZ, locationX, locationY, locationZ, label) {
+function createEntity(entity) {
     //Adds an entity to the grid
     var cubeGeo, cubeMaterial;
     var blockSize = 50;
     var voxelPosition = new THREE.Vector3();
-    cubeGeo = new THREE.BoxGeometry( blockSize * blocksX, blockSize * blocksY, blockSize * blocksZ );
-    cubeMaterial = new THREE.MeshLambertMaterial( { color: 0xfeb74c, ambient: 0x00ff80 } );
+    cubeGeo = new THREE.BoxGeometry( blockSize * entity.size.x, 
+    			blockSize * entity.size.y, 
+    			blockSize * entity.size.z );
+    cubeMaterial = new THREE.MeshLambertMaterial( { color: 0xfeb74c, ambient: 0xfeb74c } );
     // Lookout Colors 
     //cubeMaterial = new THREE.MeshLambertMaterial( { color: 0x66E066, ambient: 0x00ff80 } );
     cubeMaterial.ambient = cubeMaterial.color;
+    cubeMaterial.transparent = true;
+    cubeMaterial.opacity = entity.opacity || 1;
 
     var voxel = new THREE.Mesh( cubeGeo, cubeMaterial );
-    voxel.position.x = locationX * 50 + (blockSize * blocksX)/2;
-    voxel.position.y = locationY + (blockSize * blocksY)/2;
-    voxel.position.z = locationZ * 50 + (blockSize * blocksZ)/2;
+    voxel.position.x = entity.position.x * 50 + (blockSize * entity.size.x)/2;
+    voxel.position.y = entity.position.y + (blockSize * entity.size.y)/2;
+    voxel.position.z = entity.position.z * 50 + (blockSize * entity.size.z)/2;
     voxel.matrixAutoUpdate = false;
     voxel.updateMatrix();
-    var labelMesh = new THREE.Mesh(new THREE.TextGeometry(label,
+    var labelMesh = new THREE.Mesh(new THREE.TextGeometry(entity.label,
 							{size: 12,
 							 height: 4,
 							 curveSegments: 0
 							}), new THREE.MeshNormalMaterial());
     labelMesh.lookAt(camera.position);
     labelMesh.position.x = voxel.position.x;
-    labelMesh.position.y = blocksY * blockSize + 50;//voxel.position.y + 50;
+    labelMesh.position.y = entity.size.y * blockSize + 50;//voxel.position.y + 50;
     labelMesh.position.z = voxel.position.z;
 	
-//    objects.push( multi );
     return [voxel, labelMesh];
 }
 

@@ -64,7 +64,7 @@
 				new THREE.Vector3(-800,200,800), 
 				new THREE.Vector3(0,200,1000), 
 				new THREE.Vector3(1500,800,500),
-				new THREE.Vector3(0,200,100),
+				new THREE.Vector3(-500,200,100),
 				new THREE.Vector3(0,0,500)
 			];
 
@@ -127,19 +127,10 @@
 				// Kickstart the scene with prefab objects
 				generateKickStartObjects();
 
-				// Pipes
-//				var pipeArr = createPipe(new THREE.Vector3(50, 50, 50),
-//							 new THREE.Vector3(500, 50, 50), "Yash");
-//				scene.add(pipeArr[0]);
-//				scene.add(pipeArr[1]);
-//				labels.push(pipeArr[1]);
-
 				// picking
-
 				projector = new THREE.Projector();
 
 				// grid
-
 				var line = createGrid(gridExpanseInVoxels);
 				scene.add( line );
 
@@ -155,7 +146,6 @@
 				
 
 				// Lights
-
 				var ambientLight = new THREE.AmbientLight( 0x606060 );
 				scene.add( ambientLight );
 
@@ -175,14 +165,7 @@
 				container.appendChild( stats.domElement );
 
 			//	document.addEventListener( 'mousemove', onDocumentMouseMove, false );
-			//	document.addEventListener( 'mousedown', onDocumentMouseDown, false );
-			//	document.addEventListener( 'keydown', onDocumentKeyDown, false );
-			//	document.addEventListener( 'keyup', onDocumentKeyUp, false );
-			//	document.addEventListener( 'mousewheel', onDocumentMouseWheel, false );
-
 				window.addEventListener( 'resize', onWindowResize, false );
-
-					
 			}
 
 			function generateGUIPanel() {
@@ -205,12 +188,6 @@
 				gui.open();
 				//var folder1 = gui.addFolder('Position');
 				//folder1.open();
-
-				//var cubeX = folder1.add( parameters, 'x' ).min(-200).max(200).step(1).listen();
-
-//				var cubeColor = gui.addColor( parameters, 'color' ).name('Color').listen();
- //					cubeColor.onChange(function(value) // onFinishChange
- //					    {   cube.material.color.setHex( value.replace("#", "0x") );   });
 	
 			}
 
@@ -315,16 +292,6 @@
 			    payloadEntities.push({ size: large, region: 3, position: {}, name: "Hadoop", label: "Hadoop"});
 			    addRegionToScene(3, payloadEntities);
 
-
-
-			    //addKickStartObjectToScene(createEntity(small.x,small.y,small.z,6,0,0,"FlexD"),"FlexD");
-			    //addKickStartObjectToScene(createEntity(small.x,small.y,small.z,11,0,0,"L4E"),"L4E");
-			    //Region 2
-			   // addKickStartObjectToScene(createEntity(long.x,long.y,long.z,9,0,3,"Kafka"),"Kafka");
-			    //Region 3
-			   // addKickStartObjectToScene(createEntity(medium.x,medium.y,medium.z,8,0,11,"Storm"),"Storm");
-			    //Region
-			    //addKickStartObjectToScene(createEntity(large.x,large.y,large.z,7,0,15,"HADOOP"),"HADOOP");
 			    connectEntities("FlexD", "Kafka", "write");
 			    connectEntities("L4E", "Kafka", "write");
 			    connectEntities("Kafka", "Storm", "read");
@@ -391,16 +358,6 @@
 			    labels.push(voxelLabelPair[1]);
 			}
 
-			function onDocumentMouseWheel( event ) {
-//				radius -= event.wheelDeltaY;
-//				camera.position.x = radius * Math.sin( theta * Math.PI / 360 ) * Math.cos( phi * Math.PI / 360 );
-//				camera.position.y = radius * Math.sin( phi * Math.PI / 360 );
-//				camera.position.z = radius * Math.cos( theta * Math.PI / 360 ) * Math.cos( phi * Math.PI / 360 );
-//				camera.updateMatrix();
-//
-//				render();
-			}
-
 
 			function onWindowResize() {
 				camera.aspect = window.innerWidth / window.innerHeight;
@@ -443,24 +400,9 @@
 				var intersects = raycaster.intersectObjects( objects );
 				if ( intersects.length > 0 ) {
 					intersector = getRealIntersector( intersects );
-					// delete cube
-					if ( isShiftDown ) {
-						if ( intersector.object != plane ) {
-							scene.remove( intersector.object );
-							objects.splice( objects.indexOf( intersector.object ), 1 );
-						}
-
-					// create cube
-					} else {
-						intersector = getRealIntersector( intersects );
-						setVoxelPosition( intersector );
-						var voxel = new THREE.Mesh( cubeGeo, cubeMaterial );
-						voxel.position.copy( voxelPosition );
-						voxel.matrixAutoUpdate = false;
-						voxel.updateMatrix();
-						scene.add( voxel );
-
-						objects.push( voxel );
+					if ( intersector.object != plane ) {
+						scene.remove( intersector.object );
+						objects.splice( objects.indexOf( intersector.object ), 1 );
 					}
 				}
 			}
@@ -480,8 +422,9 @@
 			}
 
 			function animate() {
+			    render();
 				requestAnimationFrame( animate );
-//				render();
+
 				stats.update();
 				controls.update();
 			}

@@ -3,6 +3,8 @@ Tersa
 
 Tersa lets you generate 3D models of systems fast
 
+![Tersa Example Voxel3.html](/docs/images/tersa-basic.png?raw=true "Tersa Example Map")
+
 TODO:
 
 - Better pipe label positioning and geometry

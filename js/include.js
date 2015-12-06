@@ -8,7 +8,7 @@
 //Returns a grid mesh that can be added to the scene
 //Grid mesh is located in +x, +y, +z quadrant
 function createGrid(blocksRowsColumns) {
-    //Creates grid of a particular dimension measure in number of voxel block	
+    //Creates grid of a particular dimension measure in number of voxel block
     var step = 50;
     var blocksX = blocksRowsColumns, blocksZ = blocksRowsColumns;
     var sizeX = blocksX * step;
@@ -34,16 +34,17 @@ function createGrid(blocksRowsColumns) {
 }
 
 //Returns a cube mesh at the given location
-function createEntity(entity) {
+function createEntity(entity, color) {
     //Adds an entity to the grid
     var cubeGeo, cubeMaterial;
     var blockSize = 50;
     var voxelPosition = new THREE.Vector3();
-    cubeGeo = new THREE.BoxGeometry( blockSize * entity.size.x, 
-    			blockSize * entity.size.y, 
+    cubeGeo = new THREE.BoxGeometry( blockSize * entity.size.x,
+    			blockSize * entity.size.y,
     			blockSize * entity.size.z );
-    cubeMaterial = new THREE.MeshLambertMaterial( { color: 0xfeb74c, ambient: 0xfeb74c } );
-    // Lookout Colors 
+    color = color || 0xfeb74c;
+    cubeMaterial = new THREE.MeshLambertMaterial( { color: color, ambient: 0xfeb74c } );
+    // Lookout Colors
     //cubeMaterial = new THREE.MeshLambertMaterial( { color: 0x66E066, ambient: 0x00ff80 } );
     cubeMaterial.ambient = cubeMaterial.color;
     cubeMaterial.transparent = true;
@@ -64,24 +65,24 @@ function createEntity(entity) {
     labelMesh.position.x = voxel.position.x;
     labelMesh.position.y = entity.size.y * blockSize + 50;//voxel.position.y + 50;
     labelMesh.position.z = voxel.position.z;
-	
+
     return [voxel, labelMesh];
 }
 
 //Returns an array of cylindermesh and labelmesh
 function createPipeUsingCylinder(locationStart, locationEnd, label) {
     //Adds a pipe from locationX to locationY
-    var cylinder = new THREE.Mesh(new THREE.CylinderGeometry(5, 5, 200, 50, 50, false), 
+    var cylinder = new THREE.Mesh(new THREE.CylinderGeometry(5, 5, 200, 50, 50, false),
 				    new THREE.MeshBasicMaterial({ color: 0xff0000}));
     cylinder.overdraw = true;
     // The rotation will make sure that we have a diagram where blocks are added on x axis
     cylinder.rotation.x = Math.PI / 2;
-    cylinder.rotation.z = Math.PI / 2; 								
+    cylinder.rotation.z = Math.PI / 2;
     cylinder.visible = true;
     cylinder.position.x = (locationStart.x - locationEnd.x)/2;
     cylinder.position.y = (locationStart.y - locationEnd.y)/2;
     cylinder.position.z = (locationStart.z - locationEnd.z)/2;
-	
+
     var labelMesh = new THREE.Mesh(new THREE.TextGeometry(label,
 							{size: 12,
 							 height: 4,
@@ -91,7 +92,7 @@ function createPipeUsingCylinder(locationStart, locationEnd, label) {
     labelMesh.position.x = cylinder.position.x;
     labelMesh.position.y = cylinder.position.y + 50;
     labelMesh.position.z = cylinder.position.z;
-							
+
     return [cylinder, labelMesh];
 }
 
@@ -104,17 +105,17 @@ function createPipe(startVector, endVector, label) {
     lineGeo.vertices.push(endVector);
     var lineMaterial = new THREE.LineBasicMaterial({
 			color: 0xff0000,
-			linewidth: 10 
+			linewidth: 10
 		    });
-    var lineMesh = new THREE.Line(lineGeo, lineMaterial); 
-	
+    var lineMesh = new THREE.Line(lineGeo, lineMaterial);
+
     var labelMesh = new THREE.Mesh(new THREE.TextGeometry(label,
 							{size: 12,
 							 height: 4,
 							 curveSegments: 0
 							}), new THREE.LineBasicMaterial({
 				    			color: 0xff0000,
-				    			linewidth: 20 
+				    			linewidth: 20
 				    		    }));
 //new THREE.MeshNormalMaterial());
     labelMesh.lookAt(camera.position);

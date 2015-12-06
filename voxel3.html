@@ -55,16 +55,16 @@
 			var cameraFlyByTime = 20000; //Time in milliseconds
 			// This does a basic survey of the map, going through all 4 corners of the grid
 			basicCameraWaypoints = [
-				new THREE.Vector3(0,1000,1000), 
-				new THREE.Vector3(1000,1000,1000), 
+				new THREE.Vector3(0,1000,1000),
+				new THREE.Vector3(1000,1000,1000),
 				new THREE.Vector3(1000,1000,0),
 				new THREE.Vector3(0,1000,0),
 				new THREE.Vector3(0,1000,1000)
 			];
 			complexCameraWaypoints = [
-				new THREE.Vector3(0,0,500), 
-				new THREE.Vector3(-800,200,800), 
-				new THREE.Vector3(0,200,1000), 
+				new THREE.Vector3(0,0,500),
+				new THREE.Vector3(-800,200,800),
+				new THREE.Vector3(0,200,1000),
 				new THREE.Vector3(1800,800,500),
 				new THREE.Vector3(-500,200,100),
 				new THREE.Vector3(0,0,500)
@@ -112,7 +112,7 @@
 				rollOverGeo = new THREE.BoxGeometry( 50, 50, 50 );
 				rollOverMaterial = new THREE.MeshBasicMaterial( { color: 0xff0000, opacity: 0.5, transparent: true } );
 				rollOverMesh = new THREE.Mesh( rollOverGeo, rollOverMaterial );
-				scene.add( rollOverMesh );
+				//scene.add( rollOverMesh );
 
 				// cubes
 
@@ -124,12 +124,12 @@
 				origin.position.copy( new THREE.Vector3(0,0,0)  );
 				origin.matrixAutoUpdate = false;
 				origin.updateMatrix();
-				scene.add( origin );
+				//scene.add( origin );
 
 				// Kickstart the scene with prefab objects
-				//generateKickStartObjects();
-				generateKickStartObjects2();
-				
+				generateKickStartObjects();
+				//generateKickStartObjects2();
+
 				// picking
 				projector = new THREE.Projector();
 
@@ -146,7 +146,7 @@
 				objects.push( plane );
 
 				mouse2D = new THREE.Vector3( 0, 10000, 0.5 );
-				
+
 
 				// Lights
 				var ambientLight = new THREE.AmbientLight( 0x606060 );
@@ -168,8 +168,8 @@
 				container.appendChild( stats.domElement );
 
 			//	document.addEventListener( 'mousemove', onDocumentMouseMove, false );
-			
-				
+
+
 				window.addEventListener( 'resize', onWindowResize, false );
 			}
 
@@ -186,15 +186,15 @@
 				//GUI
 				gui = new dat.GUI();
 				var labelsVisible = gui.add( guiParameters, 'visible' ).name('Labels Visible?').listen();
-				labelsVisible.onChange(function(value) 
+				labelsVisible.onChange(function(value)
 				     {  for(i=0;i<labels.length;i++) { labels[i].visible = value;}; render();  	});
 				var cameraFlyBy = gui.add( cameraControls, 'flyby' ).name('Camera Fly By').listen();
-				cameraFlyBy.onChange(function(value) 
+				cameraFlyBy.onChange(function(value)
 				     {  cameraFlyByFlag = value;  	});
 				var printSnapshot = gui.add( guiParameters, 'printsnapshot' )
 									.name('2D Snapshot').listen();
-				printSnapshot.onChange(function(value) 
-				     {  
+				printSnapshot.onChange(function(value)
+				     {
 				       if(value === true) {
 						   tween = new TWEEN.Tween(camera.position).to({
 								x: 500,
@@ -208,7 +208,7 @@
 								z: 500
 							})})
 							.start();
-							
+
 							tween = new TWEEN.Tween(controls.target).to({
 								x: 500,
 								y: 0,
@@ -216,12 +216,12 @@
 							},2000)
 							.easing(TWEEN.Easing.Linear.None)
 							.start();
-						}  	
-					});				     
+						}
+					});
 				gui.open();
 				//var folder1 = gui.addFolder('Position');
 				//folder1.open();
-	
+
 			}
 
 			function connectEntities(startEntity, endEntity, label) {
@@ -241,7 +241,7 @@
 			    labels.push(pipeArr[1]);
 
 			}
-			
+
 			function onClickAddCube(blocksX, blocksY, blocksZ) {
 			    var baseX = Math.floor(Math.random() * 20) + 1;
 			    var baseZ = Math.floor(Math.random() * 20) + 1;
@@ -275,11 +275,11 @@
 
 			    //Region 1
 			    payloadEntities = [];
-			    payloadEntities.push({ size: flatLarge, 
-			    						region: 1, 
+			    payloadEntities.push({ size: flatLarge,
+			    						region: 1,
 			    						position: {},
-			    						opacity: 0.3, 
-			    						name: "Kafka", 
+			    						opacity: 0.3,
+			    						name: "Kafka",
 			    						label: "Kafka"});
 			    addRegionToScene(1, payloadEntities);
 
@@ -306,35 +306,40 @@
 			    var baseZ = Math.floor(Math.random() * 20) + 1;
 			    var small = { x: 1, y: 1, z: 2};
 			    var medium = { x: 1, y: 2, z: 3};
-			    var large = { x: 2, y:3, z: 5};
+			    var large = { x: 2, y:5, z: 5};
 			    var long = { x: 1, y:1, z: 6};
+			    var whole = { x: gridExpanseInVoxels, y:3, z: gridExpanseInVoxels};
 
 			    //Region 0
 			    //PayLoad Entities
 			    var payloadEntities = [];
-			    payloadEntities.push({ size: small, region: 0, position: {}, name: "FlexD", label: "FlexD"});
-			    payloadEntities.push({ size: small, region: 0, position: {}, name: "L4E", label: "L4E"});
-			    addRegionToScene(0, payloadEntities);
-
-			    //Region 1
-			    payloadEntities = [];
-			    payloadEntities.push({ size: medium, region: 1, position: {}, name: "Kafka", label: "Kafka"});
-			    addRegionToScene(1, payloadEntities);
-
-			    //Region 2
-			    payloadEntities = [];
-			    payloadEntities.push({ size: medium, region: 2, position: {}, name: "Storm", label: "Storm"});
-			    addRegionToScene(2, payloadEntities);
-
-			    //Region 3
-			    payloadEntities = [];
-			    payloadEntities.push({ size: large, region: 3, position: {}, name: "Hadoop", label: "Hadoop"});
-			    addRegionToScene(3, payloadEntities);
-
-			    connectEntities("FlexD", "Kafka", "write");
-			    connectEntities("L4E", "Kafka", "write");
-			    connectEntities("Kafka", "Storm", "read");
-			    connectEntities("Storm", "Hadoop", "store");
+          //payloadEntities.push();
+          tersa = { size: whole, region: 0, opacity: 0.3, position: {}, name: "Tersa", label: "Tersa"};
+          tersa.position.x = 0;
+          tersa.position.y = 0;
+          tersa.position.z = 0;
+          addKickStartObjectToScene(createEntity(tersa),tersa.name);
+          js = { size: { x: 10, y: 2, z: 10}, region: 0, opacity: 1, position: {}, name: "JS", label: "js"};
+          js.position.x = 0;
+          js.position.y = 0;
+          js.position.z = 0;
+          addKickStartObjectToScene(createEntity(js),js.name);
+          docs = { size: { x: 7, y: 2, z: 10}, region: 0, color:0x90d490, opacity: 1, position: {}, name: "Docs", label: "Docs"};
+          docs.position.x = 11;
+          docs.position.y = 0;
+          docs.position.z = 0;
+          addKickStartObjectToScene(createEntity(docs, docs.color),docs.name);
+          old = { size: { x: 7, y: 2, z: 8}, region: 0, color:0xd490d4, opacity: 1, position: {}, name: "Old", label: "Old"};
+          old.position.x = 11;
+          old.position.y = 0;
+          old.position.z = 11;
+          addKickStartObjectToScene(createEntity(old, old.color),old.name);
+          gitignore = { size: medium, region: 0, color:0xd490d4, opacity: 1, position: {}, name: "Old", label: "Old"};
+          gitignore.position.x = 0;
+          gitignore.position.y = 0;
+          gitignore.position.z = 11;
+          addKickStartObjectToScene(createEntity(gitignore, gitignore.color),gitignore.name);
+			    //addRegionToScene(0, payloadEntities);
 			}
 
 			//PayloadEntity = { size: small|medium|large|long, region = "1|2|3....", position = "", name: "", label: "" }
@@ -356,27 +361,27 @@
 			  for(i=0;i<entityCount;i++) {
 			    entityAccumulatedLength += entityArray[i].size.z;
 			  }
-			  
+
 			  //Maximum Ambient number of empty blocks between entities of same region
 			  var maxEntitySeparationBlocks = 3;
 			  var blockZPointer = 0;
 			  var entitySeparationBlocks = getSeparationBlocks(gridNumberOfBlocks,entityAccumulatedLength,entityCount);
 			  entitySeparationBlocks = Math.min(maxEntitySeparationBlocks,entitySeparationBlocks);
 			  countTopPadding = Math.floor((gridNumberOfBlocks - entityAccumulatedLength - entitySeparationBlocks)/2);
-			  
-			  blockZPointer += countTopPadding; 
+
+			  blockZPointer += countTopPadding;
 			  //Set the position of the entity
 			  for(i=0;i<entityCount;i++) {
 			    entityArray[i].position.x = regionStartBlockX;
 			    entityArray[i].position.y = 0;
 			    entityArray[i].position.z = blockZPointer;
-			    blockZPointer += entitySeparationBlocks + entityArray[i].size.z; 
+			    blockZPointer += entitySeparationBlocks + entityArray[i].size.z;
 			  }
 
 			  return entityArray;
 			}
 
-			// Get the maximum number of separation blocks between entities possible without overflowing the grid dimensions 
+			// Get the maximum number of separation blocks between entities possible without overflowing the grid dimensions
 			function getSeparationBlocks(totalBlocks, usedBlocks, entityCount) {
 			  if (entityCount == 1) return 0;
 			  var emptyBlocks = totalBlocks - usedBlocks;
@@ -387,7 +392,7 @@
 
 			  return result;
 			}
-			
+
 			function addKickStartObjectToScene(voxelLabelPair, id) {
 			    scene.add(voxelLabelPair[0]);
 			    scene.add(voxelLabelPair[1]);

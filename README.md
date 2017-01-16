@@ -1,6 +1,7 @@
 Tersa
 ===
 
+![Tersa Example Voxel3.html](/docs/images/tersa_demo.gif?raw=true "Tersa Demo Gif")
 Tersa lets you generate 3D models of systems fast
 
 ![Tersa Example Voxel3.html](/docs/images/tersa-basic.png?raw=true "Tersa Example Map")
